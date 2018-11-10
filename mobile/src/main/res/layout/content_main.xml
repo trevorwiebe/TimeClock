@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,6 +9,54 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.trevorwiebe.timeclock.MainActivity">
+
+        <TextView
+            android:id="@+id/working_status"
+            android:layout_margin="24dp"
+            android:textSize="20sp"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/clock_in_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/colorPrimaryDark"
+            android:onClick="clockIn"
+            android:paddingTop="48dp"
+            android:paddingBottom="48dp"
+            android:text="Clock In"
+            android:visibility="invisible"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/clock_out_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/colorPrimaryDark"
+            android:onClick="clockOut"
+            android:paddingTop="48dp"
+            android:paddingBottom="48dp"
+            android:text="Clock Out"
+            android:visibility="invisible"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/connecting_to_db"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>

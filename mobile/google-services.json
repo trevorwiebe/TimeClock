@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "780054410683",
+    "firebase_url": "https://timeclock-7e3fd.firebaseio.com",
+    "project_id": "timeclock-7e3fd",
+    "storage_bucket": "timeclock-7e3fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780054410683:android:533c3e07dd546a2e",
+        "android_client_info": {
+          "package_name": "com.trevorwiebe.timeclock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780054410683-qa6c23ehqic8vt51vcscb8pu1tfmj44r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJKsi_a11B_fofAL0N7fDa0Z8Ux-Wreqc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
