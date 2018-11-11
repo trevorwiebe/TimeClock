@@ -6,15 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <LinearLayout
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context="com.trevorwiebe.cgcmmapclient.activities.SignInActivity">
 
             <TextView
@@ -71,6 +67,7 @@
                 android:paddingRight="70dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:background="@android:color/white"
                 android:text="@string/sign_in"
@@ -95,8 +92,8 @@
                 android:onClick="createNewUser"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:paddingLeft="47dp"
-                android:paddingRight="47dp"
+                android:paddingLeft="46dp"
+                android:paddingRight="46dp"
                 android:layout_margin="20dp"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
@@ -106,13 +103,5 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/sign_in_progress_bar"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </FrameLayout>
 
 </ScrollView>

@@ -1,15 +1,19 @@
 package com.trevorwiebe.timeclock;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,8 +44,9 @@ public class SignInActivity extends AppCompatActivity {
     private TextView mEmail;
     private TextView mPassword;
     private TextView mErrorMessage;
-    private ProgressBar mLoading;
     private SignInButton mSignInButton;
+
+    private AlertDialog mLoadingDialog;
 
     private FirebaseAuth mAuth;
 
@@ -58,8 +63,6 @@ public class SignInActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.sign_in_email);
         mPassword = findViewById(R.id.sign_in_password);
         mErrorMessage = findViewById(R.id.sign_in_error_message);
-        mLoading = findViewById(R.id.sign_in_progress_bar);
-        mLoading.setVisibility(View.INVISIBLE);
         mSignInButton = findViewById(R.id.google_sign_in_button);
         mSignInButton.setSize(SignInButton.SIZE_WIDE);
 
@@ -79,6 +82,14 @@ public class SignInActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, GOOGLE_SIGN_IN_CODE);
             }
         });
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this)
+                .setTitle("Signing in")
+                .setCancelable(false)
+                .setView(view);
+
+        mLoadingDialog = dialog.create();
     }
 
     public void signIn(View view) {
@@ -94,18 +105,20 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
-        mLoading.setVisibility(View.VISIBLE);
+        mLoadingDialog.show();
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     finish();
-                }else{
-                    mLoading.setVisibility(View.INVISIBLE);
-                    if(task.getException() != null){
+                } else {
+                    mLoadingDialog.dismiss();
+                    if (task.getException() != null) {
                         mErrorMessage.setText(task.getException().getLocalizedMessage());
+                    } else {
+                        mErrorMessage.setText(getResources().getString(R.string.error));
                     }
                 }
             }
@@ -143,6 +156,8 @@ public class SignInActivity extends AppCompatActivity {
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
+        mLoadingDialog.show();
+
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -157,6 +172,7 @@ public class SignInActivity extends AppCompatActivity {
                             }
                             finish();
                         } else {
+                            mLoadingDialog.dismiss();
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(SignInActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
@@ -166,4 +182,5 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

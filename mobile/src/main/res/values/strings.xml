@@ -18,4 +18,5 @@
     <string name="fill_blanks">Please fill the blanks</string>
     <string name="new_user">Are you new to Time Clock?</string>
     <string name="create_an_account">Create account</string>
+    <string name="error">An unknown error occurred</string>
 </resources>
