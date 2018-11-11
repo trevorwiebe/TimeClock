@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // TODO: 10/31/2018 instantiate firebase listeners in onResume and disable them in onPause
 
-    private static final int SIGN_IN_CODE = 201;
     private static final String TAG = "MainActivity";
     private long mLastClockInTime;
     private long mLastClockOutTime;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (mUser == null) {
                     // not signed in
                     Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
-                    startActivityForResult(signInIntent, SIGN_IN_CODE);
+                    startActivity(signInIntent);
                 } else {
                     // signed in
                     mWorkingStatus = findViewById(R.id.working_status);
@@ -159,14 +158,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPause() {
         mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         super.onPause();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == SIGN_IN_CODE && resultCode == RESULT_OK){
-            Toast.makeText(this, "Hello!" , Toast.LENGTH_SHORT).show();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
