@@ -36,8 +36,6 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    // TODO: 10/31/2018 instantiate firebase listeners in onResume and disable them in onPause
-
     private static final String TAG = "MainActivity";
     private long mLastClockInTime;
     private long mLastClockOutTime;
@@ -45,9 +43,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference mClockInRef;
     private DatabaseReference mClockOutRef;
+    private Query mClockOutQuery;
+    private Query mClockInQuery;
     private FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseAuth mFirebaseAuth;
+    private ValueEventListener mClockInListener;
+    private ValueEventListener mClockOutListener;
 
     private TextView mWorkingStatus;
     private Button mClockInBtn;
@@ -87,63 +89,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mClockOutBtn = findViewById(R.id.clock_out_btn);
                     mConnectingToDb = findViewById(R.id.connecting_to_db);
 
-                    if (mClockInRef == null || mClockOutRef == null) {
-                        mClockInRef = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
-                        mClockOutRef = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
+                    if (mClockInQuery == null || mClockOutQuery == null) {
+                        mClockInQuery = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING).limitToLast(1);
+                        mClockOutQuery = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).limitToLast(1);
                     }
 
+                    // once the user is confirmed signed in, begin loading the clock in times from the database
+                    mClockInQuery.addValueEventListener(mClockInListener);
 
-                    Query mLastClockInQuery = mClockInRef.limitToLast(1);
-                    final Query mLastClockOutQuery = mClockOutRef.limitToLast(1);
-                    mLastClockInQuery.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
-                                if (clockInEntry != null) {
-                                    mLastClockInTime = clockInEntry.getClockInTime();
-                                }
-                            }
-                            mLastClockOutQuery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
-                                        if (clockOutEntry != null) {
-                                            mLastClockOutTime = clockOutEntry.getClockOutTime();
-                                        }
-                                    }
-
-                                    mConnectingToDb.setVisibility(View.INVISIBLE);
-
-                                    if (mLastClockInTime > mLastClockOutTime) {
-                                        // user is clocked in
-                                        mWorkingStatus.setText("You are clocked in");
-
-                                        mClockOutBtn.setVisibility(View.VISIBLE);
-                                        mClockInBtn.setVisibility(View.GONE);
-                                    } else {
-                                        // user is clocked out
-                                        mWorkingStatus.setText("You are clocked out");
-
-                                        mClockOutBtn.setVisibility(View.GONE);
-                                        mClockInBtn.setVisibility(View.VISIBLE);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
                 }
+            }
+        };
+
+        mClockInListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
+                    if (clockInEntry != null) {
+                        mLastClockInTime = clockInEntry.getClockInTime();
+                    }
+                }
+
+                // once the clock in times are loaded, begin loading the clock out times
+                mClockOutQuery.addValueEventListener(mClockOutListener);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        mClockOutListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
+                    if (clockOutEntry != null) {
+                        mLastClockOutTime = clockOutEntry.getClockOutTime();
+                    }
+                }
+
+                mConnectingToDb.setVisibility(View.INVISIBLE);
+
+                if (mLastClockInTime > mLastClockOutTime) {
+                    // user is clocked in
+                    mWorkingStatus.setText(getResources().getString(R.string.clocked_in));
+
+                    mClockOutBtn.setVisibility(View.VISIBLE);
+                    mClockInBtn.setVisibility(View.GONE);
+                } else {
+                    // user is clocked out
+                    mWorkingStatus.setText(getResources().getString(R.string.clocked_out));
+
+                    mClockOutBtn.setVisibility(View.GONE);
+                    mClockInBtn.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         };
     }
@@ -151,11 +158,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        if (mClockInQuery == null && mClockOutQuery == null && mUser != null) {
+            mClockInQuery = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING).limitToLast(1);
+            mClockOutQuery = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).limitToLast(1);
+        }
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onPause() {
+        mClockInQuery.removeEventListener(mClockInListener);
+        mClockOutQuery.removeEventListener(mClockOutListener);
         mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         super.onPause();
     }

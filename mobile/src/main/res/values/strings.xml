@@ -7,6 +7,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    Main activity
+    <string name="clocked_in">You are clocked in</string>
+    <string name="clocked_out">You are clocked out</string>
+
     Sign in
     <string name="sign_in">Sign In</string>
     <string name="email_label">Email</string>
