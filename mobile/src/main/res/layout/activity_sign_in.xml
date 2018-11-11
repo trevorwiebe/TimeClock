@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.trevorwiebe.cgcmmapclient.activities.SignInActivity">
+
+            <TextView
+                android:text="@string/sign_in"
+                android:layout_margin="50dp"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/email_label"
+                android:textColor="@android:color/white"
+                android:labelFor="@id/sign_in_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/sign_in_email"
+                android:inputType="textEmailAddress"
+                android:ems="13"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="35dp"
+                android:text="@string/password_label"
+                android:textColor="@android:color/white"
+                android:labelFor="@id/sign_in_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/sign_in_password"
+                android:inputType="textPassword"
+                android:ems="13"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/sign_in_error_message"
+                android:layout_margin="8dp"
+                android:layout_gravity="center"
+                android:textColor="@color/declined_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:onClick="signIn"
+                android:paddingLeft="70dp"
+                android:paddingRight="70dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:background="@android:color/white"
+                android:text="@string/sign_in"
+                android:textAllCaps="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_sign_in_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="54dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="@string/new_user"
+                android:layout_marginTop="48dp"/>
+
+            <Button
+                android:onClick="createNewUser"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="47dp"
+                android:paddingRight="47dp"
+                android:layout_margin="20dp"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:background="@color/colorPrimaryDark"
+                android:text="@string/create_an_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/sign_in_progress_bar"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
+
+</ScrollView>

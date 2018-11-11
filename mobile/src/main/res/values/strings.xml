@@ -6,4 +6,12 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    Sign in
+    <string name="sign_in">Sign In</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="fill_blanks">Please fill the blanks</string>
+    <string name="new_user">Are you new to Time Clock?</string>
+    <string name="create_an_account">Create account</string>
 </resources>

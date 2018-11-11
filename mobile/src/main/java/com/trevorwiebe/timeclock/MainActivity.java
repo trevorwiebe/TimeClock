@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // TODO: 10/31/2018 instantiate firebase listeners in onResume and disable them in onPause
 
-    private static final int RC_SIGN_IN = 23;
+    private static final int SIGN_IN_CODE = 201;
     private static final String TAG = "MainActivity";
     private long mLastClockInTime;
     private long mLastClockOutTime;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference mClockInRef;
     private DatabaseReference mClockOutRef;
     private FirebaseUser mUser;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseAuth mFirebaseAuth;
 
     private TextView mWorkingStatus;
     private Button mClockInBtn;
@@ -68,66 +71,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        mUser = auth.getCurrentUser();
-        if (mUser == null) {
-            // not signed in
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(Arrays.asList(
-                                    new AuthUI.IdpConfig.GoogleBuilder().build()))
-                            .build(),
-                    RC_SIGN_IN);
-        } else {
-            // signed in
-            mWorkingStatus = findViewById(R.id.working_status);
-            mClockInBtn = findViewById(R.id.clock_in_btn);
-            mClockOutBtn = findViewById(R.id.clock_out_btn);
-            mConnectingToDb = findViewById(R.id.connecting_to_db);
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
-            if (mClockInRef == null || mClockOutRef == null) {
-                mClockInRef = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
-                mClockOutRef = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
-            }
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                mUser = firebaseAuth.getCurrentUser();
+                if (mUser == null) {
+                    // not signed in
+                    Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
+                    startActivityForResult(signInIntent, SIGN_IN_CODE);
+                } else {
+                    // signed in
+                    mWorkingStatus = findViewById(R.id.working_status);
+                    mClockInBtn = findViewById(R.id.clock_in_btn);
+                    mClockOutBtn = findViewById(R.id.clock_out_btn);
+                    mConnectingToDb = findViewById(R.id.connecting_to_db);
 
-
-            Query mLastClockInQuery = mClockInRef.limitToLast(1);
-            final Query mLastClockOutQuery = mClockOutRef.limitToLast(1);
-            mLastClockInQuery.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
-                        if (clockInEntry != null) {
-                            mLastClockInTime = clockInEntry.getClockInTime();
-                        }
+                    if (mClockInRef == null || mClockOutRef == null) {
+                        mClockInRef = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
+                        mClockOutRef = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
                     }
-                    mLastClockOutQuery.addValueEventListener(new ValueEventListener() {
+
+
+                    Query mLastClockInQuery = mClockInRef.limitToLast(1);
+                    final Query mLastClockOutQuery = mClockOutRef.limitToLast(1);
+                    mLastClockInQuery.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
-                                if (clockOutEntry != null) {
-                                    mLastClockOutTime = clockOutEntry.getClockOutTime();
+                                ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
+                                if (clockInEntry != null) {
+                                    mLastClockInTime = clockInEntry.getClockInTime();
                                 }
                             }
+                            mLastClockOutQuery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
+                                        if (clockOutEntry != null) {
+                                            mLastClockOutTime = clockOutEntry.getClockOutTime();
+                                        }
+                                    }
 
-                            mConnectingToDb.setVisibility(View.INVISIBLE);
+                                    mConnectingToDb.setVisibility(View.INVISIBLE);
 
-                            if (mLastClockInTime > mLastClockOutTime) {
-                                // user is clocked in
-                                mWorkingStatus.setText("You are clocked in");
+                                    if (mLastClockInTime > mLastClockOutTime) {
+                                        // user is clocked in
+                                        mWorkingStatus.setText("You are clocked in");
 
-                                mClockOutBtn.setVisibility(View.VISIBLE);
-                                mClockInBtn.setVisibility(View.GONE);
-                            } else {
-                                // user is clocked out
-                                mWorkingStatus.setText("You are clocked out");
+                                        mClockOutBtn.setVisibility(View.VISIBLE);
+                                        mClockInBtn.setVisibility(View.GONE);
+                                    } else {
+                                        // user is clocked out
+                                        mWorkingStatus.setText("You are clocked out");
 
-                                mClockOutBtn.setVisibility(View.GONE);
-                                mClockInBtn.setVisibility(View.VISIBLE);
-                            }
+                                        mClockOutBtn.setVisibility(View.GONE);
+                                        mClockInBtn.setVisibility(View.VISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
 
                         @Override
@@ -136,13 +145,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
                 }
+            }
+        };
+    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
 
-                }
-            });
+    @Override
+    protected void onPause() {
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == SIGN_IN_CODE && resultCode == RESULT_OK){
+            Toast.makeText(this, "Hello!" , Toast.LENGTH_SHORT).show();
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -167,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_sign_out) {
-
+            FirebaseAuth.getInstance().signOut();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

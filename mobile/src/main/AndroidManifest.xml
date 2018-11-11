@@ -21,9 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewShiftsActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="View shifts"/>
+        <activity
+            android:name=".ViewShiftsActivity"
+            android:label="View shifts"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".SignInActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
