@@ -40,6 +40,7 @@ public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "SignInActivity";
 
     private static final int GOOGLE_SIGN_IN_CODE = 257;
+    private static final int CREATE_USER_CODE = 492;
 
     private TextView mEmail;
     private TextView mPassword;
@@ -126,7 +127,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void createNewUser(View view){
-
+        Intent createUserIntent = new Intent(SignInActivity.this, CreateAccountActivity.class);
+        startActivityForResult(createUserIntent, CREATE_USER_CODE);
     }
 
     @Override
@@ -150,6 +152,8 @@ public class SignInActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error signing in", Toast.LENGTH_SHORT).show();
                 Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             }
+        }else if(requestCode == CREATE_USER_CODE){
+            finish();
         }
     }
 
