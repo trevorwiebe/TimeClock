@@ -90,8 +90,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mConnectingToDb = findViewById(R.id.connecting_to_db);
 
                     if (mClockInQuery == null || mClockOutQuery == null) {
-                        mClockInQuery = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING).limitToLast(1);
-                        mClockOutQuery = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).limitToLast(1);
+                        mClockInRef = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
+                        mClockOutRef = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
+                        mClockInQuery = mClockInRef.limitToLast(1);
+                        mClockOutQuery = mClockOutRef.limitToLast(1);
                     }
 
                     // once the user is confirmed signed in, begin loading the clock in times from the database
@@ -159,17 +161,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         if (mClockInQuery == null && mClockOutQuery == null && mUser != null) {
-            mClockInQuery = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING).limitToLast(1);
-            mClockOutQuery = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).limitToLast(1);
+            mClockInRef = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
+            mClockOutRef = database.getReference("users").child(mUser.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
+            mClockInQuery = mClockInRef.limitToLast(1);
+            mClockOutQuery = mClockOutRef.limitToLast(1);
         }
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onPause() {
-        mClockInQuery.removeEventListener(mClockInListener);
-        mClockOutQuery.removeEventListener(mClockOutListener);
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        if(mClockInQuery != null && mClockOutQuery != null) {
+            mClockInQuery.removeEventListener(mClockInListener);
+            mClockOutQuery.removeEventListener(mClockOutListener);
+        }
+        if(mFirebaseAuth != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
         super.onPause();
     }
 
@@ -195,6 +203,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_sign_out) {
+            mUser = null;
+            mClockOutQuery = null;
+            mClockInQuery = null;
+            mClockInRef = null;
+            mClockOutRef = null;
             FirebaseAuth.getInstance().signOut();
         }
 
