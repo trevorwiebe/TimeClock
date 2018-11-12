@@ -27,9 +27,13 @@ public class ViewShiftsActivity extends AppCompatActivity {
     private FirebaseDatabase mBaseRef = FirebaseDatabase.getInstance();
     private RecyclerView mViewShiftsRv;
     private ViewShiftsRvAdapter mViewShiftsRvAdapter;
+//    private DatabaseReference mClockInRef;
+//    private DatabaseReference mClockOutRef;
+//    private ValueEventListener mClockInListener;
+//    private ValueEventListener mClockOutListener;
 
-    private ArrayList<ClockInEntry> mClockInList = new ArrayList<>();
-    private ArrayList<ClockOutEntry> mClockOutList = new ArrayList<>();
+    private ArrayList<Long> mClockInList = new ArrayList<>();
+    private ArrayList<Long> mClockOutList = new ArrayList<>();
     private ArrayList<Long> mDays = new ArrayList<>();
 
     private static final String TAG = "ViewShiftsActivity";
@@ -41,12 +45,14 @@ public class ViewShiftsActivity extends AppCompatActivity {
 
         mViewShiftsRv = findViewById(R.id.view_shifts_rv);
         mViewShiftsRv.setLayoutManager(new LinearLayoutManager(this));
-        mViewShiftsRvAdapter = new ViewShiftsRvAdapter(this, null, null, null);
+        mViewShiftsRvAdapter = new ViewShiftsRvAdapter(this, mClockInList, mClockOutList, mDays);
         mViewShiftsRv.setAdapter(mViewShiftsRvAdapter);
-
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
+
+//            mClockInRef = mBaseRef.getReference("users").child(user.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
+//            mClockOutRef = mBaseRef.getReference("users").child(user.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
 
             final String userId = user.getUid();
             DatabaseReference clockInRef = mBaseRef.getReference("users/" + userId + "/clockIn");
@@ -55,7 +61,9 @@ public class ViewShiftsActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                         ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
-                        mClockInList.add(clockInEntry);
+                        if(clockInEntry != null) {
+                            mClockInList.add(clockInEntry.getClockInTime());
+                        }
                     }
                     DatabaseReference clockOutRef = mBaseRef.getReference("users/" + userId + "/clockOut");
                     clockOutRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -63,7 +71,9 @@ public class ViewShiftsActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
-                                mClockOutList.add(clockOutEntry);
+                                if(clockOutEntry != null) {
+                                    mClockOutList.add(clockOutEntry.getClockOutTime());
+                                }
                             }
                             mViewShiftsRvAdapter.swapData(mClockInList, mClockOutList, mDays);
                         }
@@ -111,9 +121,43 @@ public class ViewShiftsActivity extends AppCompatActivity {
                     // add it to the array
                     mDays.add(nextDay);
                 }
-
-                Log.d(TAG, "onCreate: " + mDays.toString());
             }
         }
+//
+//        mClockInListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                mClockOutRef.addListenerForSingleValueEvent(mClockOutListener);
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+//                    ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
+//                    mClockInList.add(clockInEntry);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
+//
+//        mClockInRef.addListenerForSingleValueEvent(mClockInListener);
+//
+//        mClockOutListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+//                    ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
+//                    mClockOutList.add(clockOutEntry);
+//                }
+//                mViewShiftsRvAdapter.swapData(mClockInList, mClockOutList, mDays);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
     }
+
 }

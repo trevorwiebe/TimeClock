@@ -3,6 +3,7 @@ package com.trevorwiebe.timeclock.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,14 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
 
     // TODO: 10/31/2018 fill out this adapter
 
+    private static final String TAG = "ViewShiftsRvAdapter";
+
     private Context mContext;
-    private ArrayList<ClockInEntry> mClockInList;
-    private ArrayList<ClockOutEntry> mClockOutList;
+    private ArrayList<Long> mClockInList;
+    private ArrayList<Long> mClockOutList;
     private ArrayList<Long> mDays;
 
-    public ViewShiftsRvAdapter(Context context, ArrayList<ClockInEntry> clockInEntries, ArrayList<ClockOutEntry> clockOutEntries, ArrayList<Long> days){
+    public ViewShiftsRvAdapter(Context context, ArrayList<Long> clockInEntries, ArrayList<Long> clockOutEntries, ArrayList<Long> days){
         this.mContext = context;
         this.mClockInList = clockInEntries;
         this.mClockOutList = clockOutEntries;
@@ -50,10 +53,50 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewShiftsViewHolder holder, int i) {
-        holder.mViewShiftDate.setText(Utility.getFormattedDate(mDays.get(i)));
+        long date = mDays.get(i);
+        long msPerDay = 86400 * 1000;
+        long tomorrow = date + msPerDay;
+        long millisecondsAlready = 0;
+
+        ArrayList<Long> clockInForToday = new ArrayList<>();
+        ArrayList<Long> clockOutForToday = new ArrayList<>();
+
+        for(int r = 0; mClockInList.size() > r; r++){
+            long timeInQuestion = mClockInList.get(r);
+            if(timeInQuestion > date && timeInQuestion < tomorrow){
+                clockInForToday.add(timeInQuestion);
+            }
+        }
+
+        for(int q = 0; mClockOutList.size() > q; q++){
+            long timeInQuestion = mClockOutList.get(q);
+            if(timeInQuestion > date && timeInQuestion < tomorrow){
+                clockOutForToday.add(timeInQuestion);
+            }
+        }
+
+        for(int z = 0; clockInForToday.size() > z; z++){
+            long time1 = clockInForToday.get(z);
+            long time2;
+            if(clockOutForToday.size() > z){
+                time2 = clockOutForToday.get(z);
+            }else{
+                time2 = System.currentTimeMillis();
+            }
+
+            long time3 = time2 - time1;
+
+            millisecondsAlready = millisecondsAlready + time3;
+
+        }
+
+        String hoursWorked = "Time worked - " + Utility.convertMillisecondsToHours(millisecondsAlready);
+        holder.mHoursWorked.setText(hoursWorked);
+
+        holder.mViewShiftDate.setText(Utility.getFormattedDate(date));
     }
 
-    public void swapData(ArrayList<ClockInEntry> clockInEntries, ArrayList<ClockOutEntry> clockOutEntries, ArrayList<Long> days){
+    public void swapData(ArrayList<Long> clockInEntries, ArrayList<Long> clockOutEntries, ArrayList<Long> days){
         mClockInList = clockInEntries;
         mClockOutList = clockOutEntries;
         mDays = days;
@@ -63,11 +106,14 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
     public class ViewShiftsViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mViewShiftDate;
+        private TextView mHoursWorked;
 
         public ViewShiftsViewHolder(View view){
             super(view);
 
             mViewShiftDate = view.findViewById(R.id.view_shifts_date);
+            mHoursWorked = view.findViewById(R.id.hours_worked);
+
         }
     }
 }

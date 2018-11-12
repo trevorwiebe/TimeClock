@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by thisi on 10/30/2018.
@@ -35,5 +36,14 @@ public class Utility {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
+    }
+
+    public static String convertMillisecondsToHours(long millisToConvert) {
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(millisToConvert),
+                TimeUnit.MILLISECONDS.toMinutes(millisToConvert) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisToConvert)), // The change is in this line
+                TimeUnit.MILLISECONDS.toSeconds(millisToConvert) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisToConvert)));
     }
 }
