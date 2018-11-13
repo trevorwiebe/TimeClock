@@ -5,12 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.trevorwiebe.timeclock.ViewShiftsActivity">
+    tools:context="com.trevorwiebe.timeclock.ViewShiftsActivity"
+    android:background="@color/veryLightGray">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/view_shifts_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="6dp">
 
     </android.support.v7.widget.RecyclerView>
 
