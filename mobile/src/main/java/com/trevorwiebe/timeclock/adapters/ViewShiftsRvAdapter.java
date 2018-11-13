@@ -90,8 +90,7 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
 
         }
 
-        String hoursWorked = "Time worked - " + Utility.convertMillisecondsToHours(millisecondsAlready);
-        holder.mHoursWorked.setText(hoursWorked);
+        holder.mHoursWorked.setText(Utility.convertMillisecondsToHours(millisecondsAlready));
 
         holder.mViewShiftDate.setText(Utility.getFormattedDate(date));
     }

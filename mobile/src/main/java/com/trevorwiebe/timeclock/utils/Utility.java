@@ -39,10 +39,10 @@ public class Utility {
     }
 
     public static String convertMillisecondsToHours(long millisToConvert) {
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d",
+        return String.format(Locale.getDefault(), "%2d hr, %2d min, %2d sec",
                 TimeUnit.MILLISECONDS.toHours(millisToConvert),
                 TimeUnit.MILLISECONDS.toMinutes(millisToConvert) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisToConvert)), // The change is in this line
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisToConvert)),
                 TimeUnit.MILLISECONDS.toSeconds(millisToConvert) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisToConvert)));
     }
