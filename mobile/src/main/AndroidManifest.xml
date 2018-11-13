@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.trevorwiebe.timeclock">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,10 +28,12 @@
         <activity
             android:name=".SignInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".CreateAccountActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+        <activity
+            android:name=".CreateAccountActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="Settings"/>
     </application>
 
 </manifest>

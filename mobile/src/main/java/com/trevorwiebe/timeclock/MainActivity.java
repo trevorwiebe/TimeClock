@@ -201,7 +201,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent view_shifts_intent = new Intent(MainActivity.this, ViewShiftsActivity.class);
             startActivity(view_shifts_intent);
         } else if (id == R.id.nav_settings) {
-
+            Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(settings_intent);
         } else if (id == R.id.nav_sign_out) {
             mUser = null;
             mClockOutQuery = null;
