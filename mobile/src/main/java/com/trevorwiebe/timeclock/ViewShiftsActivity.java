@@ -20,17 +20,12 @@ import com.trevorwiebe.timeclock.object.ClockOutEntry;
 import com.trevorwiebe.timeclock.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class ViewShiftsActivity extends AppCompatActivity {
 
     private FirebaseDatabase mBaseRef = FirebaseDatabase.getInstance();
     private RecyclerView mViewShiftsRv;
     private ViewShiftsRvAdapter mViewShiftsRvAdapter;
-//    private DatabaseReference mClockInRef;
-//    private DatabaseReference mClockOutRef;
-//    private ValueEventListener mClockInListener;
-//    private ValueEventListener mClockOutListener;
 
     private ArrayList<Long> mClockInList = new ArrayList<>();
     private ArrayList<Long> mClockOutList = new ArrayList<>();
@@ -50,9 +45,6 @@ public class ViewShiftsActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
-
-//            mClockInRef = mBaseRef.getReference("users").child(user.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
-//            mClockOutRef = mBaseRef.getReference("users").child(user.getUid()).child(ClockOutEntry.CLOCK_OUT_CHILD_STRING);
 
             final String userId = user.getUid();
             DatabaseReference clockInRef = mBaseRef.getReference("users/" + userId + "/clockIn");
@@ -96,6 +88,7 @@ public class ViewShiftsActivity extends AppCompatActivity {
                 // get when the user was created and calculate the beginning of the day
                 long beginningOfTheDayWhenUserWasCreated = Utility.getBeginningOfDay(user.getMetadata().getCreationTimestamp());
 
+                Log.d(TAG, "onCreate: " + beginningOfTheDayWhenUserWasCreated);
                 // get the beginning of today
                 long beginningOfToday = Utility.getBeginningOfDay(System.currentTimeMillis());
 
@@ -110,7 +103,7 @@ public class ViewShiftsActivity extends AppCompatActivity {
                 time of the beginning of every day from the time the user
                 was created until today.
                  */
-                while (mDays.get(mDays.size() - 1) < (beginningOfToday - msPerDay)){
+                while (mDays.get(mDays.size() - 1) <= (beginningOfToday - msPerDay)){
 
                     // get the last day that was added to the array
                     long lastDayAdded = mDays.get(mDays.size() -1);
@@ -123,41 +116,6 @@ public class ViewShiftsActivity extends AppCompatActivity {
                 }
             }
         }
-//
-//        mClockInListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                mClockOutRef.addListenerForSingleValueEvent(mClockOutListener);
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
-//                    mClockInList.add(clockInEntry);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
-//
-//        mClockInRef.addListenerForSingleValueEvent(mClockInListener);
-//
-//        mClockOutListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
-//                    mClockOutList.add(clockOutEntry);
-//                }
-//                mViewShiftsRvAdapter.swapData(mClockInList, mClockOutList, mDays);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
     }
 
 }
