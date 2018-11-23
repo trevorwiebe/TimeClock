@@ -71,19 +71,6 @@ public class Utility {
         return selectedList;
     }
 
-    public static ArrayList<Long> getClockInClockOutTimeFromList(ArrayList<Long> wholeList, long date){
-        long msPerDay = 86400 * 1000;
-        long tomorrow = date + msPerDay;
-        ArrayList<Long> selectedList = new ArrayList<>();
-        for(int r = 0; wholeList.size() > r; r++){
-            long timeInQuestion = wholeList.get(r);
-            if(timeInQuestion > date && timeInQuestion < tomorrow){
-                selectedList.add(timeInQuestion);
-            }
-        }
-        return selectedList;
-    }
-
     public static long getBeginningOfDay(long middleOfDay) {
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
         calendar.setTimeInMillis(middleOfDay);
