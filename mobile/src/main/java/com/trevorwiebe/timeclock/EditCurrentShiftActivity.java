@@ -56,8 +56,10 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
                 long time = mSelectedClockInTimes.get(t);
                 addTextInputEditText(time, true, t);
 
-                long time2 = mSelectedClockOutTimes.get(t);
-                addTextInputEditText(time2, false, t);
+                if(t < mSelectedClockOutTimes.size()){
+                    long time2 = mSelectedClockOutTimes.get(t);
+                    addTextInputEditText(time2, false, t);
+                }
 
                 View view = new View(this);
                 LinearLayout.LayoutParams spacerParams = new LinearLayout.LayoutParams(
