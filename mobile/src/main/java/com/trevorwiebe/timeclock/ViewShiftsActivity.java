@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +40,10 @@ public class ViewShiftsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_shifts);
 
         mViewShiftsRv = findViewById(R.id.view_shifts_rv);
-        mViewShiftsRv.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        mViewShiftsRv.setLayoutManager(linearLayoutManager);
         mViewShiftsRvAdapter = new ViewShiftsRvAdapter(this, mClockInList, mClockOutList, mDays);
         mViewShiftsRv.setAdapter(mViewShiftsRvAdapter);
 

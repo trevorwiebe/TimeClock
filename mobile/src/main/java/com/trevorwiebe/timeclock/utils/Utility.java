@@ -27,8 +27,18 @@ public class Utility {
     }
 
     public static String getFormattedDate(Long msToFormat) {
-        SimpleDateFormat format = new SimpleDateFormat("EEE, MMM/d/yy", Locale.getDefault());
-        return format.format(msToFormat);
+        long msPerDay = 86400 * 1000;
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - msToFormat < msPerDay){
+            // it's today
+            return "Today";
+        }else if(currentTime - msToFormat< (msPerDay * 2)){
+            // it's yesterday
+            return "Yesterday";
+        }else {
+            SimpleDateFormat format = new SimpleDateFormat("EEE, MMM/d/yy", Locale.getDefault());
+            return format.format(msToFormat);
+        }
     }
 
     public static long getBeginningOfDay(long middleOfDay) {
