@@ -1,7 +1,9 @@
 package com.trevorwiebe.timeclock;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ValueEventListener mClockOutListener;
 
     private TextView mWorkingStatus;
+    private TextView mClockInTime;
     private Button mClockInBtn;
     private Button mClockOutBtn;
     private ProgressBar mConnectingToDb;
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivity(signInIntent);
                 } else {
                     // signed in
+                    mClockInTime = findViewById(R.id.clocked_in_time);
                     mWorkingStatus = findViewById(R.id.working_status);
                     mClockInBtn = findViewById(R.id.clock_in_btn);
                     mClockOutBtn = findViewById(R.id.clock_out_btn);
@@ -146,9 +150,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     mClockOutBtn.setVisibility(View.VISIBLE);
                     mClockInBtn.setVisibility(View.GONE);
+
+                    SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                    long clockInTime = sharedPreferences.getLong(getString(R.string.preference_last_clock_in_time), 0);
+
+                    mClockInTime.setVisibility(View.VISIBLE);
+                    mClockInTime.setText("Clocked in at: " + Utility.getFormattedTime(clockInTime));
                 } else {
                     // user is clocked out
                     mWorkingStatus.setText(getResources().getString(R.string.clocked_out));
+                    mClockInTime.setVisibility(View.INVISIBLE);
 
                     mClockOutBtn.setVisibility(View.GONE);
                     mClockInBtn.setVisibility(View.VISIBLE);
@@ -229,7 +240,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String entryId = pushRef.getKey();
             ClockInEntry clockInEntry = new ClockInEntry(System.currentTimeMillis(), entryId);
             pushRef.setValue(clockInEntry);
-            Snackbar.make(view, "Clocked in at " + Utility.getFormattedTime(), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, "Clocked in at " + Utility.getFormattedTime(System.currentTimeMillis()), Snackbar.LENGTH_SHORT).show();
+
+            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putLong(getString(R.string.preference_last_clock_in_time), System.currentTimeMillis());
+            editor.apply();
         }
     }
 
@@ -240,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String entryId = pushRef.getKey();
             ClockOutEntry clockOutEntry = new ClockOutEntry(System.currentTimeMillis(), entryId);
             pushRef.setValue(clockOutEntry);
-            Snackbar.make(view, "Clocked out at " + Utility.getFormattedTime(), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, "Clocked out at " + Utility.getFormattedTime(System.currentTimeMillis()), Snackbar.LENGTH_SHORT).show();
         }
     }
 }

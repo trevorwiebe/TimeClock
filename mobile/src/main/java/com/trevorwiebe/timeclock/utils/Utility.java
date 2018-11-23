@@ -20,9 +20,8 @@ public class Utility {
 
     private static final String TAG = "Utility";
 
-    public static String getFormattedTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("h:mm", Locale.getDefault());
-        Date date = new Date();
+    public static String getFormattedTime(Long date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", Locale.getDefault());
         return formatter.format(date);
     }
 

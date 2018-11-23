@@ -50,7 +50,6 @@
                         android:layout_marginBottom="24dp"
                         android:textColor="@android:color/darker_gray"
                         android:gravity="center_horizontal"
-                        android:text="Clocked in: 8:54am"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 

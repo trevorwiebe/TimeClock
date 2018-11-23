@@ -10,6 +10,7 @@
     Main activity
     <string name="clocked_in">You are clocked in</string>
     <string name="clocked_out">You are clocked out</string>
+    <string name="preference_last_clock_in_time">last_clock_in_time</string>
 
     Sign in
     <string name="email_and_password_sign_in">Email and password sign in</string>
