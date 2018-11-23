@@ -154,15 +154,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
                     long clockInTime = sharedPreferences.getLong(getString(R.string.preference_last_clock_in_time), 0);
 
-                    mClockInTime.setVisibility(View.VISIBLE);
                     mClockInTime.setText("Clocked in at: " + Utility.getFormattedTime(clockInTime));
                 } else {
                     // user is clocked out
                     mWorkingStatus.setText(getResources().getString(R.string.clocked_out));
-                    mClockInTime.setVisibility(View.INVISIBLE);
 
                     mClockOutBtn.setVisibility(View.GONE);
                     mClockInBtn.setVisibility(View.VISIBLE);
+
+                    SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                    long clockInTime = sharedPreferences.getLong(getString(R.string.preference_last_clock_in_time), 0);
+
+                    mClockInTime.setText("Clocked out at: " + Utility.getFormattedTime(clockInTime));
                 }
             }
 
@@ -240,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String entryId = pushRef.getKey();
             ClockInEntry clockInEntry = new ClockInEntry(System.currentTimeMillis(), entryId);
             pushRef.setValue(clockInEntry);
-            Snackbar.make(view, "Clocked in at " + Utility.getFormattedTime(System.currentTimeMillis()), Snackbar.LENGTH_SHORT).show();
 
             SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -256,7 +258,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String entryId = pushRef.getKey();
             ClockOutEntry clockOutEntry = new ClockOutEntry(System.currentTimeMillis(), entryId);
             pushRef.setValue(clockOutEntry);
-            Snackbar.make(view, "Clocked out at " + Utility.getFormattedTime(System.currentTimeMillis()), Snackbar.LENGTH_SHORT).show();
+
+            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putLong(getString(R.string.preference_last_clock_in_time), System.currentTimeMillis());
+            editor.apply();
         }
     }
 }
