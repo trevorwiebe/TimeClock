@@ -1,11 +1,13 @@
 package com.trevorwiebe.timeclock;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.trevorwiebe.timeclock.adapters.ViewShiftsRvAdapter;
 import com.trevorwiebe.timeclock.object.ClockInEntry;
 import com.trevorwiebe.timeclock.object.ClockOutEntry;
+import com.trevorwiebe.timeclock.utils.ItemClickListener;
 import com.trevorwiebe.timeclock.utils.Utility;
 
 import java.util.ArrayList;
@@ -46,6 +49,25 @@ public class ViewShiftsActivity extends AppCompatActivity {
         mViewShiftsRv.setLayoutManager(linearLayoutManager);
         mViewShiftsRvAdapter = new ViewShiftsRvAdapter(this, mClockInList, mClockOutList, mDays);
         mViewShiftsRv.setAdapter(mViewShiftsRvAdapter);
+
+        mViewShiftsRv.addOnItemTouchListener(new ItemClickListener(this, mViewShiftsRv, new ItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                long selectedDay = mDays.get(position);
+                ArrayList<Long> selectedClockInTimes = Utility.getClockInClockOutTimeFromList(mClockInList, selectedDay);
+                ArrayList<Long> selectedClockOutTime = Utility.getClockInClockOutTimeFromList(mClockOutList, selectedDay);
+                Intent editCurrentShiftIntent = new Intent(ViewShiftsActivity.this, EditCurrentShiftActivity.class);
+                editCurrentShiftIntent.putExtra("selectedClockInTimes", selectedClockInTimes);
+                editCurrentShiftIntent.putExtra("selectedClockOutTimes", selectedClockOutTime);
+                editCurrentShiftIntent.putExtra("selectedDate", selectedDay);
+                startActivity(editCurrentShiftIntent);
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){

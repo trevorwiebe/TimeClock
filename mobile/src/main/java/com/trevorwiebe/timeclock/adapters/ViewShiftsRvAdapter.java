@@ -54,26 +54,10 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewShiftsViewHolder holder, int i) {
         long date = mDays.get(i);
-        long msPerDay = 86400 * 1000;
-        long tomorrow = date + msPerDay;
         long millisecondsAlready = 0;
 
-        ArrayList<Long> clockInForToday = new ArrayList<>();
-        ArrayList<Long> clockOutForToday = new ArrayList<>();
-
-        for(int r = 0; mClockInList.size() > r; r++){
-            long timeInQuestion = mClockInList.get(r);
-            if(timeInQuestion > date && timeInQuestion < tomorrow){
-                clockInForToday.add(timeInQuestion);
-            }
-        }
-
-        for(int q = 0; mClockOutList.size() > q; q++){
-            long timeInQuestion = mClockOutList.get(q);
-            if(timeInQuestion > date && timeInQuestion < tomorrow){
-                clockOutForToday.add(timeInQuestion);
-            }
-        }
+        ArrayList<Long> clockInForToday = Utility.getClockInClockOutTimeFromList(mClockInList, date);
+        ArrayList<Long> clockOutForToday = Utility.getClockInClockOutTimeFromList(mClockOutList, date);
 
         for(int z = 0; clockInForToday.size() > z; z++){
             long time1 = clockInForToday.get(z);
