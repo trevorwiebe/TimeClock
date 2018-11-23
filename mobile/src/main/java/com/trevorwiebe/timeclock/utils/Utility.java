@@ -22,6 +22,7 @@ public class Utility {
     private static final String TAG = "Utility";
 
     public static String getFormattedTime(Long date) {
+        if(date == 0)return null;
         SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", Locale.getDefault());
         return formatter.format(date);
     }

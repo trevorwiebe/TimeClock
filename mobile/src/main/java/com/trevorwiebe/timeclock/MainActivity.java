@@ -85,6 +85,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mUser = firebaseAuth.getCurrentUser();
                 if (mUser == null) {
                     // not signed in
+
+                    // clear the last clockIn/clockOut time
+                    SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove(getString(R.string.preference_last_clock_in_time));
+                    editor.apply();
+
+
+                    // open up sigInActivity/createUserActivity
                     Intent signInIntent = new Intent(MainActivity.this, SignInActivity.class);
                     startActivity(signInIntent);
                 } else {
@@ -154,7 +163,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
                     long clockInTime = sharedPreferences.getLong(getString(R.string.preference_last_clock_in_time), 0);
 
-                    mClockInTime.setText("Clocked in at: " + Utility.getFormattedTime(clockInTime));
+                    if(Utility.getFormattedTime(clockInTime) == null){
+                        mClockInTime.setVisibility(View.GONE);
+                    }else {
+                        mClockInTime.setVisibility(View.VISIBLE);
+                        mClockInTime.setText("Clocked in at: " + Utility.getFormattedTime(clockInTime));
+                    }
                 } else {
                     // user is clocked out
                     mWorkingStatus.setText(getResources().getString(R.string.clocked_out));
@@ -165,7 +179,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
                     long clockInTime = sharedPreferences.getLong(getString(R.string.preference_last_clock_in_time), 0);
 
-                    mClockInTime.setText("Clocked out at: " + Utility.getFormattedTime(clockInTime));
+                    if(Utility.getFormattedTime(clockInTime) == null){
+                        mClockInTime.setVisibility(View.GONE);
+                    }else {
+                        mClockInTime.setVisibility(View.VISIBLE);
+                        mClockInTime.setText("Clocked out at: " + Utility.getFormattedTime(clockInTime));
+                    }
                 }
             }
 
@@ -263,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putLong(getString(R.string.preference_last_clock_in_time), System.currentTimeMillis());
             editor.apply();
+
         }
     }
 }
