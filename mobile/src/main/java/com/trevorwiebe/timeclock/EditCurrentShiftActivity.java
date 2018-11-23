@@ -13,6 +13,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.trevorwiebe.timeclock.object.ClockInEntry;
 import com.trevorwiebe.timeclock.object.ClockOutEntry;
 import com.trevorwiebe.timeclock.object.ViewObject;
 import com.trevorwiebe.timeclock.utils.Utility;
@@ -26,8 +31,10 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
 
     private LinearLayout mNoShiftsWorked;
     private LinearLayout mShiftsWorked;
-    private ArrayList<Long> mSelectedClockInTimes;
-    private ArrayList<Long> mSelectedClockOutTimes;
+    private ArrayList<ClockInEntry> mSelectedClockInTimes;
+    private ArrayList<ClockOutEntry> mSelectedClockOutTimes;
+
+    private DatabaseReference mFirebaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +44,15 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
         mNoShiftsWorked = findViewById(R.id.no_shift_layout);
         mShiftsWorked = findViewById(R.id.shifts_worked_layout);
 
+        mFirebaseRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         Intent selectedIntent = getIntent();
         //set the title of the activity to the date you are editing
         long selectedTime = selectedIntent.getLongExtra("selectedDate", 0);
         setTitle(Utility.getFormattedDate(selectedTime));
 
-        mSelectedClockInTimes = (ArrayList<Long>) selectedIntent.getSerializableExtra("selectedClockInTimes");
-        mSelectedClockOutTimes = (ArrayList<Long>) selectedIntent.getSerializableExtra("selectedClockOutTimes");
+        mSelectedClockInTimes = (ArrayList<ClockInEntry>) selectedIntent.getSerializableExtra("selectedClockInTimes");
+        mSelectedClockOutTimes = (ArrayList<ClockOutEntry>) selectedIntent.getSerializableExtra("selectedClockOutTimes");
 
         if(mSelectedClockInTimes == null || mSelectedClockInTimes.size() == 0 && mSelectedClockOutTimes == null || mSelectedClockOutTimes.size() == 0){
             mShiftsWorked.setVisibility(View.GONE);
@@ -53,12 +62,14 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
             mNoShiftsWorked.setVisibility(View.GONE);
 
             for(int t = 0; mSelectedClockInTimes.size() > t; t++){
-                long time = mSelectedClockInTimes.get(t);
-                addTextInputEditText(time, true, t);
+                long time = mSelectedClockInTimes.get(t).getClockInTime();
+                String timeId = mSelectedClockInTimes.get(t).getEntryId();
+                addTextInputEditText(time, timeId,true, t);
 
                 if(t < mSelectedClockOutTimes.size()){
-                    long time2 = mSelectedClockOutTimes.get(t);
-                    addTextInputEditText(time2, false, t);
+                    long time2 = mSelectedClockOutTimes.get(t).getClockOutTime();
+                    String timeOutId = mSelectedClockOutTimes.get(t).getEntryId();
+                    addTextInputEditText(time2, timeOutId, false, t);
                 }
 
                 View view = new View(this);
@@ -88,7 +99,7 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
         }
     }
 
-    private void addTextInputEditText(Long time, boolean isClockedIn, int viewId){
+    private void addTextInputEditText(Long time, String timeId, boolean isClockedIn, int viewId){
 
         // TextInputLayout
         LinearLayout.LayoutParams textInputParams = new LinearLayout.LayoutParams(
@@ -112,7 +123,7 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
         params.setMargins(dpAsPixels1, dpAsPixels2, dpAsPixels1, dpAsPixels2);
 
         TextInputEditText textInputEditText = new TextInputEditText(this);
-        ViewObject viewObject = new ViewObject(isClockedIn, viewId);
+        ViewObject viewObject = new ViewObject(isClockedIn, timeId, viewId, time);
         textInputEditText.setTag(viewObject);
         if(isClockedIn){
             textInputEditText.setHint("Clocked In");
@@ -132,19 +143,17 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ViewObject tag = (ViewObject) view.getTag();
                 if(tag.isClockedIn()){
-                    long time = mSelectedClockInTimes.get(tag.getViewId());
-                    showHourPicker(time);
+                    showHourPicker(tag);
                 }else{
-                    long time = mSelectedClockOutTimes.get(tag.getViewId());
-                    showHourPicker(time);
+                    showHourPicker(tag);
                 }
             }
         });
     }
 
-    public void showHourPicker(long selectedTime) {
+    public void showHourPicker(final ViewObject object) {
         final Calendar myCalender = Calendar.getInstance();
-        myCalender.setTimeInMillis(selectedTime);
+        myCalender.setTimeInMillis(object.getTime());
         int hour = myCalender.get(Calendar.HOUR);
         int minute = myCalender.get(Calendar.MINUTE);
 
@@ -154,6 +163,19 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
                 if (view.isShown()) {
                     myCalender.set(Calendar.HOUR, hourOfDay);
                     myCalender.set(Calendar.MINUTE, minute);
+                    long newTimeSelected = myCalender.getTimeInMillis();
+                    String id = object.getTimeId();
+                    DatabaseReference updateTimeRef;
+                    if(object.isClockedIn()) {
+                        updateTimeRef = mFirebaseRef.child(ClockInEntry.CLOCK_IN_CHILD_STRING).child(id);
+                        ClockInEntry clockInEntry = new ClockInEntry(newTimeSelected, id);
+                        updateTimeRef.setValue(clockInEntry);
+                    }else{
+                        updateTimeRef = mFirebaseRef.child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).child(id);
+                        ClockOutEntry clockOutEntry = new ClockOutEntry(newTimeSelected, id);
+                        updateTimeRef.setValue(clockOutEntry);
+                    }
+
                 }
             }
         };

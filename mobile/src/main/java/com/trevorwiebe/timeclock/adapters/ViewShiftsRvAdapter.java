@@ -56,14 +56,14 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
         long date = mDays.get(i);
         long millisecondsAlready = 0;
 
-        ArrayList<Long> clockInForToday = Utility.getClockInTimesForDateFromList(mClockInList, date);
-        ArrayList<Long> clockOutForToday = Utility.getClockOutTimesForDateFromList(mClockOutList, date);
+        ArrayList<ClockInEntry> clockInForToday = Utility.getClockInTimesForDateFromList(mClockInList, date);
+        ArrayList<ClockOutEntry> clockOutForToday = Utility.getClockOutTimesForDateFromList(mClockOutList, date);
 
         for(int z = 0; clockInForToday.size() > z; z++){
-            long time1 = clockInForToday.get(z);
+            long time1 = clockInForToday.get(z).getClockInTime();
             long time2;
             if(clockOutForToday.size() > z){
-                time2 = clockOutForToday.get(z);
+                time2 = clockOutForToday.get(z).getClockOutTime();
             }else{
                 time2 = System.currentTimeMillis();
             }

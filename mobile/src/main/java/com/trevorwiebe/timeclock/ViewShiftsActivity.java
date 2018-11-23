@@ -54,8 +54,8 @@ public class ViewShiftsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 long selectedDay = mDays.get(position);
-                ArrayList<Long> selectedClockInTimes = Utility.getClockInTimesForDateFromList(mClockInList, selectedDay);
-                ArrayList<Long> selectedClockOutTime = Utility.getClockOutTimesForDateFromList(mClockOutList, selectedDay);
+                ArrayList<ClockInEntry> selectedClockInTimes = Utility.getClockInTimesForDateFromList(mClockInList, selectedDay);
+                ArrayList<ClockOutEntry> selectedClockOutTime = Utility.getClockOutTimesForDateFromList(mClockOutList, selectedDay);
                 Intent editCurrentShiftIntent = new Intent(ViewShiftsActivity.this, EditCurrentShiftActivity.class);
                 editCurrentShiftIntent.putExtra("selectedClockInTimes", selectedClockInTimes);
                 editCurrentShiftIntent.putExtra("selectedClockOutTimes", selectedClockOutTime);

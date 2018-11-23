@@ -1,6 +1,9 @@
 package com.trevorwiebe.timeclock.object;
 
-public class ClockInEntry {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ClockInEntry implements Parcelable {
 
     public static final String CLOCK_IN_CHILD_STRING = "clockIn";
 
@@ -29,4 +32,32 @@ public class ClockInEntry {
     public void setEntryId(String entryId) {
         this.entryId = entryId;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.clockInTime);
+        dest.writeString(this.entryId);
+    }
+
+    protected ClockInEntry(Parcel in) {
+        this.clockInTime = in.readLong();
+        this.entryId = in.readString();
+    }
+
+    public static final Creator<ClockInEntry> CREATOR = new Creator<ClockInEntry>() {
+        @Override
+        public ClockInEntry createFromParcel(Parcel source) {
+            return new ClockInEntry(source);
+        }
+
+        @Override
+        public ClockInEntry[] newArray(int size) {
+            return new ClockInEntry[size];
+        }
+    };
 }

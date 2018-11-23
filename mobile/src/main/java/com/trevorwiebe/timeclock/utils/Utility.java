@@ -45,27 +45,31 @@ public class Utility {
         }
     }
 
-    public static ArrayList<Long> getClockInTimesForDateFromList(ArrayList<ClockInEntry> wholeList, long date){
+    public static ArrayList<ClockInEntry> getClockInTimesForDateFromList(ArrayList<ClockInEntry> wholeList, long date){
         long msPerDay = 86400 * 1000;
         long tomorrow = date + msPerDay;
-        ArrayList<Long> selectedList = new ArrayList<>();
+        ArrayList<ClockInEntry> selectedList = new ArrayList<>();
         for(int r = 0; wholeList.size() > r; r++){
             long timeInQuestion = wholeList.get(r).getClockInTime();
             if(timeInQuestion > date && timeInQuestion < tomorrow){
-                selectedList.add(timeInQuestion);
+                String entryId = wholeList.get(r).getEntryId();
+                ClockInEntry clockInEntry = new ClockInEntry(timeInQuestion, entryId);
+                selectedList.add(clockInEntry);
             }
         }
         return selectedList;
     }
 
-    public static ArrayList<Long> getClockOutTimesForDateFromList(ArrayList<ClockOutEntry> wholeList, long date){
+    public static ArrayList<ClockOutEntry> getClockOutTimesForDateFromList(ArrayList<ClockOutEntry> wholeList, long date){
         long msPerDay = 86400 * 1000;
         long tomorrow = date + msPerDay;
-        ArrayList<Long> selectedList = new ArrayList<>();
+        ArrayList<ClockOutEntry> selectedList = new ArrayList<>();
         for(int r = 0; wholeList.size() > r; r++){
             long timeInQuestion = wholeList.get(r).getClockOutTime();
             if(timeInQuestion > date && timeInQuestion < tomorrow){
-                selectedList.add(timeInQuestion);
+                String entryId = wholeList.get(r).getEntryId();
+                ClockOutEntry clockOutEntry = new ClockOutEntry(timeInQuestion, entryId);
+                selectedList.add(clockOutEntry);
             }
         }
         return selectedList;
@@ -82,19 +86,12 @@ public class Utility {
     }
 
     public static String convertMillisecondsToHours(long millisToConvert) {
-        return String.format(Locale.getDefault(), "%2d hr, %2d min, %2d sec",
-                TimeUnit.MILLISECONDS.toHours(millisToConvert),
-                TimeUnit.MILLISECONDS.toMinutes(millisToConvert) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisToConvert)),
-                TimeUnit.MILLISECONDS.toSeconds(millisToConvert) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisToConvert)));
+        return String.format(Locale.getDefault(), "%2d hr, %2d min", TimeUnit.MILLISECONDS.toHours(millisToConvert), TimeUnit.MILLISECONDS.toMinutes(millisToConvert) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisToConvert)));
     }
 
     public static long getTimeFromWhenToString(String whenToString){
         long currentTime = System.currentTimeMillis();
         long msPerDay = 86400 * 1000;
-//        long msPerYear = msPerDay * 365;
-//        long msPerYear = 31556952000L;
         long msPerYear = 31536000000L;
         String[] splitString = whenToString.split(",");
         switch (splitString[0]){
