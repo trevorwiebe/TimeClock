@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.trevorwiebe.timeclock.object.ClockInEntry;
+import com.trevorwiebe.timeclock.object.ClockOutEntry;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,6 +43,32 @@ public class Utility {
             SimpleDateFormat format = new SimpleDateFormat("EEE, MMM/d/yy", Locale.getDefault());
             return format.format(msToFormat);
         }
+    }
+
+    public static ArrayList<Long> getClockInTimesForDateFromList(ArrayList<ClockInEntry> wholeList, long date){
+        long msPerDay = 86400 * 1000;
+        long tomorrow = date + msPerDay;
+        ArrayList<Long> selectedList = new ArrayList<>();
+        for(int r = 0; wholeList.size() > r; r++){
+            long timeInQuestion = wholeList.get(r).getClockInTime();
+            if(timeInQuestion > date && timeInQuestion < tomorrow){
+                selectedList.add(timeInQuestion);
+            }
+        }
+        return selectedList;
+    }
+
+    public static ArrayList<Long> getClockOutTimesForDateFromList(ArrayList<ClockOutEntry> wholeList, long date){
+        long msPerDay = 86400 * 1000;
+        long tomorrow = date + msPerDay;
+        ArrayList<Long> selectedList = new ArrayList<>();
+        for(int r = 0; wholeList.size() > r; r++){
+            long timeInQuestion = wholeList.get(r).getClockOutTime();
+            if(timeInQuestion > date && timeInQuestion < tomorrow){
+                selectedList.add(timeInQuestion);
+            }
+        }
+        return selectedList;
     }
 
     public static ArrayList<Long> getClockInClockOutTimeFromList(ArrayList<Long> wholeList, long date){

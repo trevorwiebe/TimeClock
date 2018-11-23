@@ -31,8 +31,8 @@ public class ViewShiftsActivity extends AppCompatActivity {
     private RecyclerView mViewShiftsRv;
     private ViewShiftsRvAdapter mViewShiftsRvAdapter;
 
-    private ArrayList<Long> mClockInList = new ArrayList<>();
-    private ArrayList<Long> mClockOutList = new ArrayList<>();
+    private ArrayList<ClockInEntry> mClockInList = new ArrayList<>();
+    private ArrayList<ClockOutEntry> mClockOutList = new ArrayList<>();
     private ArrayList<Long> mDays = new ArrayList<>();
 
     private static final String TAG = "ViewShiftsActivity";
@@ -54,8 +54,8 @@ public class ViewShiftsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 long selectedDay = mDays.get(position);
-                ArrayList<Long> selectedClockInTimes = Utility.getClockInClockOutTimeFromList(mClockInList, selectedDay);
-                ArrayList<Long> selectedClockOutTime = Utility.getClockInClockOutTimeFromList(mClockOutList, selectedDay);
+                ArrayList<Long> selectedClockInTimes = Utility.getClockInTimesForDateFromList(mClockInList, selectedDay);
+                ArrayList<Long> selectedClockOutTime = Utility.getClockOutTimesForDateFromList(mClockOutList, selectedDay);
                 Intent editCurrentShiftIntent = new Intent(ViewShiftsActivity.this, EditCurrentShiftActivity.class);
                 editCurrentShiftIntent.putExtra("selectedClockInTimes", selectedClockInTimes);
                 editCurrentShiftIntent.putExtra("selectedClockOutTimes", selectedClockOutTime);
@@ -80,7 +80,7 @@ public class ViewShiftsActivity extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                         ClockInEntry clockInEntry = snapshot.getValue(ClockInEntry.class);
                         if(clockInEntry != null) {
-                            mClockInList.add(clockInEntry.getClockInTime());
+                            mClockInList.add(clockInEntry);
                         }
                     }
                     DatabaseReference clockOutRef = mBaseRef.getReference("users/" + userId + "/clockOut");
@@ -90,7 +90,7 @@ public class ViewShiftsActivity extends AppCompatActivity {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                                 ClockOutEntry clockOutEntry = snapshot.getValue(ClockOutEntry.class);
                                 if(clockOutEntry != null) {
-                                    mClockOutList.add(clockOutEntry.getClockOutTime());
+                                    mClockOutList.add(clockOutEntry);
                                 }
                             }
                             mViewShiftsRvAdapter.swapData(mClockInList, mClockOutList, mDays);

@@ -39,6 +39,11 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    // TODO: 11/23/2018 add a loader to the viewShiftsActivity
+    // TODO: 11/23/2018 add the ability to edit shifts
+    // TODO: 11/23/2018 add the ability to delete shifts
+    // TODO: 11/23/2018 work on the 'hours worked today' and 'hours worked this pay period'
+    // TODO: 11/23/2018 finish with sending email of hours to employer, make an email all emails are sent from
     private static final String TAG = "MainActivity";
     private long mLastClockInTime;
     private long mLastClockOutTime;

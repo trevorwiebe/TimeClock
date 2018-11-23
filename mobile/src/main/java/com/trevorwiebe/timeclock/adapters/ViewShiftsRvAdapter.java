@@ -27,11 +27,11 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
     private static final String TAG = "ViewShiftsRvAdapter";
 
     private Context mContext;
-    private ArrayList<Long> mClockInList;
-    private ArrayList<Long> mClockOutList;
+    private ArrayList<ClockInEntry> mClockInList;
+    private ArrayList<ClockOutEntry> mClockOutList;
     private ArrayList<Long> mDays;
 
-    public ViewShiftsRvAdapter(Context context, ArrayList<Long> clockInEntries, ArrayList<Long> clockOutEntries, ArrayList<Long> days){
+    public ViewShiftsRvAdapter(Context context, ArrayList<ClockInEntry> clockInEntries, ArrayList<ClockOutEntry> clockOutEntries, ArrayList<Long> days){
         this.mContext = context;
         this.mClockInList = clockInEntries;
         this.mClockOutList = clockOutEntries;
@@ -56,8 +56,8 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
         long date = mDays.get(i);
         long millisecondsAlready = 0;
 
-        ArrayList<Long> clockInForToday = Utility.getClockInClockOutTimeFromList(mClockInList, date);
-        ArrayList<Long> clockOutForToday = Utility.getClockInClockOutTimeFromList(mClockOutList, date);
+        ArrayList<Long> clockInForToday = Utility.getClockInTimesForDateFromList(mClockInList, date);
+        ArrayList<Long> clockOutForToday = Utility.getClockOutTimesForDateFromList(mClockOutList, date);
 
         for(int z = 0; clockInForToday.size() > z; z++){
             long time1 = clockInForToday.get(z);
@@ -79,7 +79,7 @@ public class ViewShiftsRvAdapter extends RecyclerView.Adapter<ViewShiftsRvAdapte
         holder.mViewShiftDate.setText(Utility.getFormattedDate(date));
     }
 
-    public void swapData(ArrayList<Long> clockInEntries, ArrayList<Long> clockOutEntries, ArrayList<Long> days){
+    public void swapData(ArrayList<ClockInEntry> clockInEntries, ArrayList<ClockOutEntry> clockOutEntries, ArrayList<Long> days){
         mClockInList = clockInEntries;
         mClockOutList = clockOutEntries;
         mDays = days;
