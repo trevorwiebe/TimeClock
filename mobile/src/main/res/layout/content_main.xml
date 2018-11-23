@@ -9,48 +9,153 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/main_scroll_view"
+        android:background="@color/veryLightGray"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.trevorwiebe.timeclock.MainActivity">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/working_status"
-            android:layout_margin="24dp"
-            android:textSize="20sp"
-            android:gravity="center_horizontal"
-            android:textColor="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/clock_in_btn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/sign_in_sign_out_btn"
-            android:onClick="clockIn"
-            android:paddingTop="48dp"
-            android:paddingBottom="48dp"
-            android:text="Clock In"
-            android:visibility="invisible"
-            android:textColor="@android:color/white" />
+            android:orientation="vertical"
+            tools:context="com.trevorwiebe.timeclock.MainActivity">
 
-        <Button
-            android:id="@+id/clock_out_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/sign_in_sign_out_btn"
-            android:onClick="clockOut"
-            android:paddingTop="48dp"
-            android:paddingBottom="48dp"
-            android:text="Clock Out"
-            android:visibility="invisible"
-            android:textColor="@android:color/white" />
+            <android.support.v7.widget.CardView
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp">
 
-    </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/working_status"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="20sp"
+                        android:gravity="center_horizontal"
+                        android:textColor="@android:color/black"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/clocked_in_time"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="24dp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center_horizontal"
+                        android:text="Clocked in: 8:54am"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/clock_in_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/sign_in_sign_out_btn"
+                        android:onClick="clockIn"
+                        android:paddingTop="36dp"
+                        android:paddingBottom="36dp"
+                        android:text="Clock In"
+                        android:visibility="invisible"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/clock_out_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/sign_in_sign_out_btn"
+                        android:onClick="clockOut"
+                        android:paddingTop="36dp"
+                        android:paddingBottom="36dp"
+                        android:text="Clock Out"
+                        android:visibility="invisible"
+                        android:textColor="@android:color/white" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:text="4.85"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:textColor="@android:color/black"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:text="Hours worked today"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="24dp"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:text="42.25"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:textColor="@android:color/black"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:text="Hours worked this pay period"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="24dp"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/connecting_to_db"

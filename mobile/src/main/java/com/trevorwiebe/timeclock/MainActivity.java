@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Button mClockInBtn;
     private Button mClockOutBtn;
     private ProgressBar mConnectingToDb;
+    private ScrollView mMainScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mClockInBtn = findViewById(R.id.clock_in_btn);
                     mClockOutBtn = findViewById(R.id.clock_out_btn);
                     mConnectingToDb = findViewById(R.id.connecting_to_db);
+                    mMainScrollView = findViewById(R.id.main_scroll_view);
+                    mMainScrollView.setVisibility(View.INVISIBLE);
 
                     if (mClockInQuery == null || mClockOutQuery == null) {
                         mClockInRef = database.getReference("users").child(mUser.getUid()).child(ClockInEntry.CLOCK_IN_CHILD_STRING);
@@ -134,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 mConnectingToDb.setVisibility(View.INVISIBLE);
+                mMainScrollView.setVisibility(View.VISIBLE);
 
                 if (mLastClockInTime > mLastClockOutTime) {
                     // user is clocked in
