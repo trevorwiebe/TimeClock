@@ -116,6 +116,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // once the user is confirmed signed in, begin loading the clock in times from the database
                     mClockInQuery.addValueEventListener(mClockInListener);
 
+                    // set the navigation drawer with the user credentials
+                    NavigationView navigationView = findViewById(R.id.nav_view);
+                    View headerView = navigationView.getHeaderView(0);
+                    TextView navUsername = headerView.findViewById(R.id.nav_name);
+                    TextView navEmail = headerView.findViewById(R.id.nav_email);
+
+                    navUsername.setText(mUser.getDisplayName());
+                    navEmail.setText(mUser.getEmail());
+
                 }
             }
         };
