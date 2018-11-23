@@ -1,16 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateAccountActivity"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    tools:context=".CreateAccountActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:text="@string/create_an_account"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/sign_in_email"
+            android:text="@string/name_label"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/new_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:inputType="textCapWords"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:labelFor="@id/sign_in_email"
+            android:text="@string/email_label"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/new_user_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:labelFor="@id/sign_in_password"
+            android:text="@string/password_label"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/new_user_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:inputType="textPassword"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/new_user_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:textColor="@color/declined_color" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
+            android:background="@android:color/white"
+            android:onClick="createUser"
+            android:paddingLeft="35dp"
+            android:paddingTop="10dp"
+            android:paddingRight="35dp"
+            android:paddingBottom="10dp"
+            android:text="@string/create_an_account"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="or use Google"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_create_user_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 

@@ -113,6 +113,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    mLoadingDialog.dismiss();
                     finish();
                 } else {
                     mLoadingDialog.dismiss();

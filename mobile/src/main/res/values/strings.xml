@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TimeClock</string>
+    <string name="app_name">Time Clock</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -12,11 +12,16 @@
     <string name="clocked_out">You are clocked out</string>
 
     Sign in
-    <string name="sign_in">Sign In</string>
+    <string name="email_and_password_sign_in">Email and password sign in</string>
+    <string name="sign_in">Sign in</string>
     <string name="email_label">Email</string>
     <string name="password_label">Password</string>
     <string name="fill_blanks">Please fill the blanks</string>
     <string name="new_user">Are you new to Time Clock?</string>
     <string name="create_an_account">Create account</string>
     <string name="error">An unknown error occurred</string>
+
+    Create new account
+    <string name="name_label">Name</string>
+
 </resources>
