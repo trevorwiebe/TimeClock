@@ -43,6 +43,12 @@
             android:parentActivityName=".ViewShiftsActivity">
 
         </activity>
+
+        <provider
+            android:authorities="com.trevorwiebe.timeclock"
+            android:name=".database.TimeClockContentProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
