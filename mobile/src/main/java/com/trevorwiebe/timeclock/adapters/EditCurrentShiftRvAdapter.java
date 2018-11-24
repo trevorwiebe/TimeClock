@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class EditCurrentShiftRvAdapter extends RecyclerView.Adapter<EditCurrentShiftRvAdapter.EditShiftViewHolder> {
+
+    private static final String TAG = "EditCurrentShiftRvAdapt";
 
     private ArrayList<ClockInEntry> mClockInList;
     private ArrayList<ClockOutEntry> mClockOutList;
@@ -48,97 +51,92 @@ public class EditCurrentShiftRvAdapter extends RecyclerView.Adapter<EditCurrentS
     @NonNull
     @Override
     public EditShiftViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_edit_current_shift, viewGroup, false);
-        return new EditShiftViewHolder(view);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.list_edit_current_shift, viewGroup, false);
+            return new EditShiftViewHolder(view);
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull EditShiftViewHolder editShiftViewHolder, int i) {
 
-        long clockInTime = mClockInList.get(i).getClockInTime();
-        long clockOutTime = mClockOutList.get(i).getClockOutTime();
+            long clockInTime = mClockInList.get(i).getClockInTime();
+            long clockOutTime = mClockOutList.get(i).getClockOutTime();
 
-        editShiftViewHolder.mClockInTime.setText(Utility.getFormattedTime(clockInTime));
-        editShiftViewHolder.mClockOutTime.setText(Utility.getFormattedTime(clockOutTime));
+            editShiftViewHolder.mClockInTime.setText(Utility.getFormattedTime(clockInTime));
+            editShiftViewHolder.mClockOutTime.setText(Utility.getFormattedTime(clockOutTime));
 
-        editShiftViewHolder.mClockInTime.setTag(mClockInList.get(i));
-        editShiftViewHolder.mClockOutTime.setTag(mClockOutList.get(i));
+            editShiftViewHolder.mClockInTime.setTag(mClockInList.get(i));
+            editShiftViewHolder.mClockOutTime.setTag(mClockOutList.get(i));
 
-        String clockInTimeString = Long.toString(clockInTime);
-        String clockOutTimeString = Long.toString(clockOutTime);
+            String clockInTimeString = Long.toString(clockInTime);
+            String clockOutTimeString = Long.toString(clockOutTime);
 
-        editShiftViewHolder.mDeleteEntryButton.setTag(mClockInList.get(i).getEntryId() + " " + mClockOutList.get(i).getEntryId() + " " + clockInTimeString + " " + clockOutTimeString);
+            editShiftViewHolder.mDeleteEntryButton.setTag(mClockInList.get(i).getEntryId() + " " + mClockOutList.get(i).getEntryId() + " " + clockInTimeString + " " + clockOutTimeString);
 
-        editShiftViewHolder.mClockInTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClockInEntry clockInEntry = (ClockInEntry) view.getTag();
-                long clockInTime = clockInEntry.getClockInTime();
-                String timeId = clockInEntry.getEntryId();
-                showHourPicker(clockInTime, timeId, true);
-            }
-        });
-        editShiftViewHolder.mClockOutTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClockOutEntry clockOutEntry = (ClockOutEntry) view.getTag();
-                long clockOutTime = clockOutEntry.getClockOutTime();
-                String timeId = clockOutEntry.getEntryId();
-                showHourPicker(clockOutTime, timeId, false);
-            }
-        });
-        editShiftViewHolder.mDeleteEntryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                String string = (String) view.getTag();
-                String[] splitString = string.split(" ");
+            editShiftViewHolder.mClockInTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ClockInEntry clockInEntry = (ClockInEntry) view.getTag();
+                    long clockInTime = clockInEntry.getClockInTime();
+                    String timeId = clockInEntry.getEntryId();
+                    showHourPicker(clockInTime, timeId, true);
+                }
+            });
+            editShiftViewHolder.mClockOutTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ClockOutEntry clockOutEntry = (ClockOutEntry) view.getTag();
+                    long clockOutTime = clockOutEntry.getClockOutTime();
+                    String timeId = clockOutEntry.getEntryId();
+                    showHourPicker(clockOutTime, timeId, false);
+                }
+            });
+            editShiftViewHolder.mDeleteEntryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    String string = (String) view.getTag();
+                    String[] splitString = string.split(" ");
 
-                final String clockInId = splitString[0];
-                final String clockOutId = splitString[1];
+                    final String clockInId = splitString[0];
+                    final String clockOutId = splitString[1];
 
-                long clockInTime = Long.parseLong(splitString[2]);
-                long clockOutTime = Long.parseLong(splitString[3]);;
+                    long clockInTime = Long.parseLong(splitString[2]);
+                    long clockOutTime = Long.parseLong(splitString[3]);;
 
-                View deleteShiftView = LayoutInflater.from(mContext).inflate(R.layout.dialog_delete_shift, null);
-                TextView deleteClockInTimeTextView = deleteShiftView.findViewById(R.id.delete_clock_in_time_text_view);
-                TextView deleteClockOutTimeTextView = deleteShiftView.findViewById(R.id.delete_clock_out_time_text_view);
-                deleteClockInTimeTextView.setText("Clocked in at: " + Utility.getFormattedTime(clockInTime));
-                deleteClockOutTimeTextView.setText("Clocked out at: " + Utility.getFormattedTime(clockOutTime));
-                AlertDialog.Builder deleteShiftDialog = new AlertDialog.Builder(mContext)
-                        .setTitle("Are you sure you want to delete this shift?")
-                        .setView(deleteShiftView)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                    View deleteShiftView = LayoutInflater.from(mContext).inflate(R.layout.dialog_delete_shift, null);
+                    TextView deleteClockInTimeTextView = deleteShiftView.findViewById(R.id.delete_clock_in_time_text_view);
+                    TextView deleteClockOutTimeTextView = deleteShiftView.findViewById(R.id.delete_clock_out_time_text_view);
+                    deleteClockInTimeTextView.setText("Clocked in at: " + Utility.getFormattedTime(clockInTime));
+                    deleteClockOutTimeTextView.setText("Clocked out at: " + Utility.getFormattedTime(clockOutTime));
+                    AlertDialog.Builder deleteShiftDialog = new AlertDialog.Builder(mContext)
+                            .setTitle("Are you sure you want to delete this shift?")
+                            .setView(deleteShiftView)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                                deleteItemFromClockInList(mClockInList, clockInId);
-                                deleteItemFromClockOutList(mClockOutList, clockOutId);
+                                    deleteItemFromClockInList(mClockInList, clockInId);
+                                    deleteItemFromClockOutList(mClockOutList, clockOutId);
 
-                                mFirebaseRef.child(ClockInEntry.CLOCK_IN_CHILD_STRING).child(clockInId).setValue(null);
-                                mFirebaseRef.child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).child(clockOutId).setValue(null);
+                                    mFirebaseRef.child(ClockInEntry.CLOCK_IN_CHILD_STRING).child(clockInId).setValue(null);
+                                    mFirebaseRef.child(ClockOutEntry.CLOCK_OUT_CHILD_STRING).child(clockOutId).setValue(null);
 
-                                notifyDataSetChanged();
+                                    notifyDataSetChanged();
 
-                                Snackbar deleteShiftSnackBar = Snackbar.make(view, "Shift deleted successfully", Snackbar.LENGTH_LONG);
-                                deleteShiftSnackBar.setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        Toast.makeText(mContext, "Not implemented yet", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                deleteShiftSnackBar.show();
+                                    Snackbar deleteShiftSnackBar = Snackbar.make(view, "Shift deleted successfully", Snackbar.LENGTH_LONG);
+                                    deleteShiftSnackBar.show();
 
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        });
-                deleteShiftDialog.show();
-            }
-        });
+                                }
+                            });
+                    deleteShiftDialog.show();
+                }
+            });
 
     }
 

@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +28,7 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
 
     // widgets
     private RecyclerView mRecyclerView;
+    private TextView mEmptyText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,18 @@ public class EditCurrentShiftActivity extends AppCompatActivity {
         mSelectedClockOutTimes = (ArrayList<ClockOutEntry>) selectedIntent.getSerializableExtra("selectedClockOutTimes");
 
         mRecyclerView = findViewById(R.id.edit_current_shift_rv);
+        mEmptyText = findViewById(R.id.no_current_shift);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         EditCurrentShiftRvAdapter editCurrentShiftRvAdapter = new EditCurrentShiftRvAdapter(this, mSelectedClockInTimes, mSelectedClockOutTimes, mFirebaseRef);
         mRecyclerView.setAdapter(editCurrentShiftRvAdapter);
+
+        if(mSelectedClockInTimes.size() == 0){
+            mEmptyText.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }else{
+            mEmptyText.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 }
