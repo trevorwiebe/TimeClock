@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +30,7 @@ public class ViewShiftsActivity extends AppCompatActivity {
 
     private FirebaseDatabase mBaseRef = FirebaseDatabase.getInstance();
     private RecyclerView mViewShiftsRv;
+    private ProgressBar mProgressBar;
     private ViewShiftsRvAdapter mViewShiftsRvAdapter;
 
     private ArrayList<ClockInEntry> mClockInList = new ArrayList<>();
@@ -43,6 +45,8 @@ public class ViewShiftsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_shifts);
 
         mViewShiftsRv = findViewById(R.id.view_shifts_rv);
+        mProgressBar = findViewById(R.id.loading_shifts);
+        mViewShiftsRv.setVisibility(View.INVISIBLE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -94,6 +98,8 @@ public class ViewShiftsActivity extends AppCompatActivity {
                                 }
                             }
                             mViewShiftsRvAdapter.swapData(mClockInList, mClockOutList, mDays);
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                            mViewShiftsRv.setVisibility(View.VISIBLE);
                         }
 
                         @Override
