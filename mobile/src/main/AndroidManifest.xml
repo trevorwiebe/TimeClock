@@ -39,16 +39,15 @@
             android:name=".SelectHoursSentRecurrenceActivity"
             android:label="Send hours recurrence"
             android:parentActivityName=".SettingsActivity" />
-        <activity android:name=".EditCurrentShiftActivity"
-            android:parentActivityName=".ViewShiftsActivity">
-
-        </activity>
 
         <provider
-            android:authorities="com.trevorwiebe.timeclock"
             android:name=".database.TimeClockContentProvider"
-            android:exported="false"/>
+            android:authorities="com.trevorwiebe.timeclock"
+            android:exported="false" />
 
+        <activity android:name=".EditCurrentShiftActivity"
+            android:parentActivityName=".ViewShiftsActivity"
+            ></activity>
     </application>
 
 </manifest>
